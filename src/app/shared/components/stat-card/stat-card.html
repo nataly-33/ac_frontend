@@ -1,0 +1,7 @@
+<div class="glass-card p-5 text-center">
+  @if (icono) {
+    <div class="text-2xl mb-2">{{ icono }}</div>
+  }
+  <div class="font-display font-bold text-3xl mb-1" [style.color]="color">{{ valor }}</div>
+  <div class="text-xs" style="color: var(--color-text-muted)">{{ etiqueta }}</div>
+</div>
