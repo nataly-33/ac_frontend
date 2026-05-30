@@ -1,0 +1,169 @@
+<div class="min-h-screen" style="background: var(--color-bg)">
+  <app-navbar />
+
+  <div class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="font-display font-extrabold text-3xl mb-1 glow-text" style="color: var(--color-text)">
+        Monitor de Acuíferos — Santa Cruz
+      </h1>
+      <p class="text-sm" style="color: var(--color-text-muted)">
+        Actualizado en tiempo real · {{ municipios.length }} municipios monitoreados
+      </p>
+    </div>
+
+    <!-- Error de conexión -->
+    @if (errorConexion) {
+      <div class="glass-card p-4 mb-6 flex items-center gap-3"
+           style="border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.05)">
+        <span class="text-xl">⚠️</span>
+        <div>
+          <p class="text-sm font-semibold" style="color: #f59e0b">Backend no disponible</p>
+          <p class="text-xs" style="color: var(--color-text-muted)">
+            Inicia el servidor FastAPI en localhost:8000 para ver los datos reales.
+          </p>
+        </div>
+      </div>
+    }
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="flex items-center justify-center py-20">
+        <div class="w-10 h-10 rounded-full border-2 animate-spin mr-3"
+             style="border-color: var(--color-border); border-top-color: var(--color-accent)"></div>
+        <span class="font-mono text-sm" style="color: var(--color-text-muted)">Cargando datos...</span>
+      </div>
+    }
+
+    @if (!loading) {
+      <!-- Stats globales -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <app-stat-card
+          [valor]="municipios.length"
+          etiqueta="Municipios monitoreados"
+          icono="📍"
+          [color]="'var(--color-accent)'" />
+        <app-stat-card
+          [valor]="criticosCount"
+          etiqueta="En estado crítico"
+          icono="🔴"
+          [color]="'var(--color-critico)'" />
+        <app-stat-card
+          [valor]="altosCount"
+          etiqueta="Riesgo alto"
+          icono="🟠"
+          [color]="'var(--color-alto)'" />
+        <app-stat-card
+          [valor]="scorePromedio"
+          etiqueta="Score promedio de riesgo"
+          icono="📊"
+          [color]="'var(--color-medio)'" />
+      </div>
+
+      <!-- Mapa + Alertas -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+        <!-- Mapa -->
+        <div class="lg:col-span-2">
+          <div class="glass-card p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-display font-semibold text-lg" style="color: var(--color-text)">
+                Mapa de riesgo hídrico
+              </h2>
+              <span class="text-xs font-mono px-2 py-1 rounded"
+                    style="background: rgba(56,189,248,0.1); color: var(--color-accent); border: 1px solid var(--color-border)">
+                Haz clic en un municipio
+              </span>
+            </div>
+            <app-mapa-scz
+              [municipios]="municipios"
+              (municipioSeleccionado)="irAMunicipio($event)" />
+          </div>
+        </div>
+
+        <!-- Panel de alertas -->
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-display font-semibold text-lg" style="color: var(--color-text)">
+              Alertas activas
+            </h2>
+            @if (alertasCriticasCount > 0) {
+              <span class="px-2 py-1 rounded-full text-xs badge-critico">
+                {{ alertasCriticasCount }} críticas
+              </span>
+            }
+          </div>
+
+          @if (alertas.length === 0 && !errorConexion) {
+            <div class="glass-card p-6 text-center">
+              <p class="text-sm" style="color: var(--color-text-muted)">Sin alertas activas</p>
+            </div>
+          }
+
+          <div class="flex flex-col gap-3 overflow-y-auto" style="max-height: 480px">
+            @for (alerta of alertas; track alerta.id) {
+              <app-alerta-card [alerta]="alerta" />
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de municipios -->
+      <div class="glass-card p-6">
+        <h2 class="font-display font-semibold text-lg mb-4" style="color: var(--color-text)">
+          Estado por municipio
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--color-border)">
+                <th class="text-left pb-3 font-display font-semibold text-xs uppercase tracking-wide"
+                    style="color: var(--color-text-muted)">Municipio</th>
+                <th class="text-left pb-3 font-display font-semibold text-xs uppercase tracking-wide"
+                    style="color: var(--color-text-muted)">Región</th>
+                <th class="text-center pb-3 font-display font-semibold text-xs uppercase tracking-wide"
+                    style="color: var(--color-text-muted)">Riesgo</th>
+                <th class="text-right pb-3 font-display font-semibold text-xs uppercase tracking-wide"
+                    style="color: var(--color-text-muted)">Score</th>
+                <th class="text-right pb-3 font-display font-semibold text-xs uppercase tracking-wide"
+                    style="color: var(--color-text-muted)">Población</th>
+                <th class="pb-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of municipios; track m.id) {
+                <tr class="transition-colors hover:bg-white/5 cursor-pointer"
+                    style="border-bottom: 1px solid rgba(56,189,248,0.05)"
+                    (click)="irAMunicipio(m)">
+                  <td class="py-3 font-medium" style="color: var(--color-text)">{{ m.nombre }}</td>
+                  <td class="py-3 capitalize" style="color: var(--color-text-muted)">
+                    {{ m.region.replace('_', ' ') }}
+                  </td>
+                  <td class="py-3 text-center">
+                    <span class="px-3 py-1 rounded-full text-xs font-mono uppercase"
+                          [class]="'badge-' + m.nivel_riesgo">
+                      {{ m.nivel_riesgo }}
+                    </span>
+                  </td>
+                  <td class="py-3 text-right font-mono" style="color: var(--color-accent)">
+                    {{ (m.score_riesgo * 100).toFixed(0) }}/100
+                  </td>
+                  <td class="py-3 text-right" style="color: var(--color-text-muted)">
+                    {{ m.poblacion.toLocaleString() }}
+                  </td>
+                  <td class="py-3 text-right">
+                    <a [routerLink]="['/municipio', m.id]"
+                       class="text-xs font-mono hover:opacity-80 transition"
+                       style="color: var(--color-accent)"
+                       (click)="$event.stopPropagation()">Ver detalle →</a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</div>
