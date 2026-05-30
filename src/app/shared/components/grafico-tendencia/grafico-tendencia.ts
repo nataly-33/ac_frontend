@@ -19,7 +19,7 @@ export class GraficoTendencia implements AfterViewInit, OnDestroy {
 
   private chart: Chart | null = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {}
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -28,14 +28,11 @@ export class GraficoTendencia implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.chart) {
-      this.chart.destroy();
-    }
+    this.chart?.destroy();
   }
 
   private crearGrafico(): void {
     if (!this.canvasRef?.nativeElement) return;
-
     const ctx = this.canvasRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
@@ -49,27 +46,29 @@ export class GraficoTendencia implements AfterViewInit, OnDestroy {
           {
             label: 'Nivel freático (%)',
             data: this.proyeccion,
-            borderColor: '#38bdf8',
-            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+            borderColor: '#84CC16',
+            backgroundColor: 'rgba(132,204,22,0.08)',
             borderWidth: 2,
             tension: 0.4,
             fill: true,
             yAxisID: 'y',
-            pointBackgroundColor: '#38bdf8',
-            pointBorderColor: '#0a1e2e',
+            pointBackgroundColor: '#84CC16',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
             pointRadius: 4,
           },
           {
             label: 'Precipitación (mm)',
             data: this.precipitacion,
             borderColor: '#f59e0b',
-            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            backgroundColor: 'rgba(245,158,11,0.06)',
             borderWidth: 2,
             tension: 0.4,
             fill: true,
             yAxisID: 'y1',
             pointBackgroundColor: '#f59e0b',
-            pointBorderColor: '#0a1e2e',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
             pointRadius: 4,
           },
         ],
@@ -80,51 +79,45 @@ export class GraficoTendencia implements AfterViewInit, OnDestroy {
         plugins: {
           legend: {
             labels: {
-              color: '#7fa8c4',
-              font: { family: 'DM Sans', size: 12 },
+              color: '#737373',
+              font: { family: 'Poppins', size: 11 },
               padding: 16,
               usePointStyle: true,
+              pointStyleWidth: 8,
             },
           },
           tooltip: {
-            backgroundColor: 'rgba(10, 30, 46, 0.95)',
-            titleColor: '#e2f0fb',
-            bodyColor: '#7fa8c4',
-            borderColor: 'rgba(56, 189, 248, 0.2)',
+            backgroundColor: '#262626',
+            titleColor: '#F9FAF7',
+            bodyColor: '#E5E5E5',
+            borderColor: '#E5E5E5',
             borderWidth: 1,
             padding: 10,
+            cornerRadius: 8,
           },
         },
         scales: {
           x: {
-            grid: { color: 'rgba(56, 189, 248, 0.08)' },
-            ticks: { color: '#7fa8c4', font: { size: 11 } },
+            grid: { color: '#E5E5E5' },
+            ticks: { color: '#737373', font: { family: 'Poppins', size: 11 } },
+            border: { color: '#E5E5E5' },
           },
           y: {
             type: 'linear',
             position: 'left',
-            title: {
-              display: true,
-              text: 'Nivel freático (%)',
-              color: '#38bdf8',
-              font: { size: 11 },
-            },
-            grid: { color: 'rgba(56, 189, 248, 0.08)' },
-            ticks: { color: '#7fa8c4', font: { size: 11 } },
-            min: 0,
-            max: 100,
+            title: { display: true, text: 'Nivel freático (%)', color: '#84CC16', font: { size: 11, family: 'Poppins' } },
+            grid: { color: '#E5E5E5' },
+            ticks: { color: '#737373', font: { family: 'Poppins', size: 11 } },
+            border: { color: '#E5E5E5' },
+            min: 0, max: 100,
           },
           y1: {
             type: 'linear',
             position: 'right',
-            title: {
-              display: true,
-              text: 'Precipitación (mm)',
-              color: '#f59e0b',
-              font: { size: 11 },
-            },
+            title: { display: true, text: 'Precipitación (mm)', color: '#f59e0b', font: { size: 11, family: 'Poppins' } },
             grid: { drawOnChartArea: false },
-            ticks: { color: '#7fa8c4', font: { size: 11 } },
+            ticks: { color: '#737373', font: { family: 'Poppins', size: 11 } },
+            border: { color: '#E5E5E5' },
           },
         },
       },
