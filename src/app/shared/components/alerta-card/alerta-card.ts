@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { LucideAngularModule, LucideIconData, Sun, Gauge, AlertCircle, Bell } from 'lucide-angular';
+import { LucideAngularModule, LucideIconData, Sun, Gauge, CircleAlert, Bell } from 'lucide-angular';
 import { Alerta } from '../../../core/models/municipio.model';
 
 @Component({
@@ -15,7 +15,7 @@ export class AlertaCard {
   private readonly iconMap: Record<string, LucideIconData> = {
     sequia: Sun,
     sobreextraccion: Gauge,
-    contaminacion: AlertCircle,
+    contaminacion: CircleAlert,
   };
 
   get isCritica(): boolean {

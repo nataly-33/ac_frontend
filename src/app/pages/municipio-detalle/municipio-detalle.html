@@ -1,54 +1,73 @@
-<div class="min-h-screen p-6" style="background: var(--color-bg)">
-  <a routerLink="/dashboard" class="inline-flex items-center gap-2 text-sm mb-6 hover:opacity-80 transition"
-     style="color: var(--color-accent)">← Volver al mapa</a>
+<div class="min-h-screen bg-jichi-base">
+  <!-- Sticky top bar -->
+  <div class="sticky top-0 z-40 bg-jichi-base/95 backdrop-blur-sm border-b border-jichi-gray/40 px-6 lg:px-8 py-3 flex items-center gap-3">
+    <a routerLink="/dashboard"
+       class="inline-flex items-center gap-1.5 text-sm font-medium text-jichi-muted hover:text-jichi-dark transition-colors duration-150">
+      <lucide-angular [img]="ArrowLeft" size="16"></lucide-angular>
+      Volver al mapa
+    </a>
+    @if (municipio) {
+      <span class="text-jichi-gray">/</span>
+      <span class="text-sm font-medium text-jichi-dark">{{ municipio.nombre }}</span>
+    }
+  </div>
 
-  @if (loading) {
-    <div class="text-center py-20">
-      <div class="w-10 h-10 rounded-full border-2 animate-spin mx-auto mb-4"
-           style="border-color: var(--color-border); border-top-color: var(--color-accent)"></div>
-      <div class="font-mono text-sm" style="color: var(--color-text-muted)">Cargando análisis...</div>
-    </div>
-  }
+  <div class="max-w-6xl mx-auto px-6 lg:px-8 py-8">
 
-  @if (notFound) {
-    <div class="text-center py-20">
-      <div class="text-4xl mb-4">🔍</div>
-      <h2 class="font-display font-bold text-xl mb-2" style="color: var(--color-text)">Municipio no encontrado</h2>
-      <p class="text-sm mb-6" style="color: var(--color-text-muted)">El municipio solicitado no existe en la base de datos.</p>
-      <a routerLink="/dashboard" class="px-5 py-2 rounded-lg font-display font-semibold text-sm transition-all hover:scale-105 inline-block"
-         style="background: linear-gradient(135deg, #38bdf8, #0284c7); color: #050f1a">Volver al dashboard</a>
-    </div>
-  }
+    <!-- Loading -->
+    @if (loading) {
+      <div class="flex items-center justify-center py-24">
+        <div class="flex flex-col items-center gap-4">
+          <div class="w-10 h-10 rounded-full border-2 border-jichi-gray border-t-jichi-accent animate-spin"></div>
+          <p class="text-sm text-jichi-muted">Cargando análisis...</p>
+        </div>
+      </div>
+    }
 
-  @if (!loading && !notFound && municipio && prediccion) {
-    <div class="max-w-6xl mx-auto">
-      <!-- Header -->
-      <div class="glass-card p-6 mb-6">
-        <div class="flex justify-between items-start flex-wrap gap-4">
+    <!-- Not found -->
+    @if (notFound) {
+      <div class="flex flex-col items-center justify-center py-24 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-white border border-jichi-gray/40 flex items-center justify-center mb-6">
+          <lucide-angular [img]="TriangleAlert" size="28" class="text-amber-400"></lucide-angular>
+        </div>
+        <h2 class="font-bold text-xl text-jichi-dark mb-2">Municipio no encontrado</h2>
+        <p class="text-sm text-jichi-muted mb-8 max-w-sm">El municipio solicitado no existe en la base de datos.</p>
+        <a routerLink="/dashboard"
+           class="inline-flex items-center gap-2 bg-jichi-dark text-jichi-base px-6 py-3 rounded-full
+                  font-semibold text-sm hover:bg-jichi-accent hover:text-jichi-dark transition-colors duration-150">
+          <lucide-angular [img]="ArrowLeft" size="14"></lucide-angular>
+          Volver al dashboard
+        </a>
+      </div>
+    }
+
+    @if (!loading && !notFound && municipio && prediccion) {
+
+      <!-- Header card -->
+      <div class="bg-white border border-jichi-gray/40 rounded-2xl p-6 mb-6">
+        <div class="flex justify-between items-start flex-wrap gap-4 mb-6">
           <div>
-            <h1 class="font-display font-bold text-3xl mb-1">{{ municipio.nombre }}</h1>
-            <p style="color: var(--color-text-muted)">
-              {{ municipio.region.replace('_', ' ') | titlecase }} · {{ municipio.poblacion | number }} habitantes
+            <h1 class="font-bold text-3xl text-jichi-dark leading-tight mb-1">{{ municipio.nombre }}</h1>
+            <p class="text-sm text-jichi-muted capitalize">
+              {{ municipio.region.replace('_', ' ') }} &middot; {{ municipio.poblacion | number }} habitantes
             </p>
           </div>
-          <div>
-            <span class="px-4 py-2 rounded-full text-sm font-display font-semibold uppercase"
-                  [class]="getRiesgoClass(municipio.nivel_riesgo)">
-              ⬤ {{ municipio.nivel_riesgo }}
-            </span>
-          </div>
+          <span class="px-4 py-2 rounded-full text-sm font-semibold uppercase"
+                [class]="getRiesgoClass(municipio.nivel_riesgo)">
+            {{ municipio.nivel_riesgo }}
+          </span>
         </div>
 
         <!-- Score bar -->
-        <div class="mt-6">
-          <div class="flex justify-between text-xs mb-2" style="color: var(--color-text-muted)">
-            <span>Score de riesgo hídrico</span>
-            <span class="font-mono font-semibold" style="color: var(--color-text)">
+        <div>
+          <div class="flex justify-between text-xs mb-2">
+            <span class="font-medium text-jichi-muted">Score de riesgo hídrico</span>
+            <span class="font-bold tabular-nums text-jichi-dark">
               {{ (municipio.score_riesgo * 100).toFixed(0) }}/100
             </span>
           </div>
-          <div class="h-2 rounded-full" style="background: var(--color-surface-2)">
-            <div class="h-2 rounded-full transition-all duration-1000"
+          <div class="h-2 rounded-full bg-jichi-gray/40">
+            <div class="h-2 rounded-full transition-all duration-700"
                  [style.width.%]="municipio.score_riesgo * 100"
                  [style.background]="getRiesgoColor(municipio.nivel_riesgo)">
             </div>
@@ -56,38 +75,40 @@
         </div>
       </div>
 
-      <!-- Indicadores clave -->
+      <!-- KPI cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div class="glass-card p-4 text-center">
-          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
-            {{ prediccion.meses_criticos }}
+        <div class="bg-white border border-jichi-gray/40 rounded-xl p-5 hover:shadow-sm transition-shadow duration-150">
+          <div class="w-8 h-8 rounded-lg bg-jichi-base border border-jichi-gray/40 flex items-center justify-center mb-3">
+            <lucide-angular [img]="TrendingDown" size="14" class="text-jichi-muted"></lucide-angular>
           </div>
-          <div class="text-xs" style="color: var(--color-text-muted)">Meses hasta<br>situación crítica</div>
+          <div class="font-bold text-2xl tabular-nums text-jichi-dark mb-1">{{ prediccion.meses_criticos }}</div>
+          <div class="text-[10px] font-bold uppercase tracking-widest text-jichi-muted">Meses hasta<br>situación crítica</div>
         </div>
-        <div class="glass-card p-4 text-center">
-          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
-            {{ prediccion.proyeccion[0] }}%
+        <div class="bg-white border border-jichi-gray/40 rounded-xl p-5 hover:shadow-sm transition-shadow duration-150">
+          <div class="w-8 h-8 rounded-lg bg-jichi-base border border-jichi-gray/40 flex items-center justify-center mb-3">
+            <lucide-angular [img]="Droplets" size="14" class="text-jichi-accent"></lucide-angular>
           </div>
-          <div class="text-xs" style="color: var(--color-text-muted)">Nivel freático<br>actual (relativo)</div>
+          <div class="font-bold text-2xl tabular-nums text-jichi-dark mb-1">{{ prediccion.proyeccion[0] }}%</div>
+          <div class="text-[10px] font-bold uppercase tracking-widest text-jichi-muted">Nivel freático<br>actual</div>
         </div>
-        <div class="glass-card p-4 text-center">
-          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
-            {{ prediccion.precipitacion_historica[5] }}mm
+        <div class="bg-white border border-jichi-gray/40 rounded-xl p-5 hover:shadow-sm transition-shadow duration-150">
+          <div class="w-8 h-8 rounded-lg bg-jichi-base border border-jichi-gray/40 flex items-center justify-center mb-3">
+            <lucide-angular [img]="CloudRain" size="14" class="text-jichi-muted"></lucide-angular>
           </div>
-          <div class="text-xs" style="color: var(--color-text-muted)">Precipitación<br>último mes</div>
+          <div class="font-bold text-2xl tabular-nums text-jichi-dark mb-1">{{ prediccion.precipitacion_historica[5] }}mm</div>
+          <div class="text-[10px] font-bold uppercase tracking-widest text-jichi-muted">Precipitación<br>último mes</div>
         </div>
-        <div class="glass-card p-4 text-center">
-          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
-            {{ prediccion.tendencia }}
-          </div>
-          <div class="text-xs" style="color: var(--color-text-muted)">Tendencia<br>actual</div>
+        <div class="bg-white border border-jichi-gray/40 rounded-xl p-5 hover:shadow-sm transition-shadow duration-150">
+          <div class="w-2 h-2 rounded-full mb-3 mt-1" [style.background]="getRiesgoColor(municipio.nivel_riesgo)"></div>
+          <div class="font-bold text-sm text-jichi-dark mb-1 leading-snug">{{ prediccion.tendencia }}</div>
+          <div class="text-[10px] font-bold uppercase tracking-widest text-jichi-muted">Tendencia<br>actual</div>
         </div>
       </div>
 
       <!-- Gráfico + Panel Gemini -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="glass-card p-5">
-          <h3 class="font-display font-semibold mb-4">Proyección nivel freático — 6 meses</h3>
+        <div class="bg-white border border-jichi-gray/40 rounded-2xl p-6">
+          <h3 class="font-semibold text-sm text-jichi-dark mb-5">Proyección nivel freático — 6 meses</h3>
           <app-grafico-tendencia
             [proyeccion]="prediccion.proyeccion"
             [precipitacion]="prediccion.precipitacion_historica" />
@@ -96,6 +117,6 @@
           [municipioId]="municipio.id"
           [municipioNombre]="municipio.nombre" />
       </div>
-    </div>
-  }
+    }
+  </div>
 </div>

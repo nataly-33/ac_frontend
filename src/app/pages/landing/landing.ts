@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import {
   LucideAngularModule,
   Droplets, ArrowRight, Radio, Brain, Bell,
-  ChevronDown, AlertTriangle, MapPin, TrendingDown, Shield
+  ChevronDown, TriangleAlert, MapPin, TrendingDown, Shield
 } from 'lucide-angular';
 
 @Component({
@@ -20,7 +20,7 @@ export class Landing {
   readonly Brain = Brain;
   readonly Bell = Bell;
   readonly ChevronDown = ChevronDown;
-  readonly AlertTriangle = AlertTriangle;
+  readonly TriangleAlert = TriangleAlert;
   readonly MapPin = MapPin;
   readonly TrendingDown = TrendingDown;
   readonly Shield = Shield;

@@ -19,19 +19,6 @@
       </div>
     </div>
 
-    <!-- Banner backend offline -->
-    @if (errorConexion) {
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
-        <lucide-angular [img]="AlertTriangle" size="18" class="text-amber-500 flex-shrink-0"></lucide-angular>
-        <div>
-          <p class="text-sm font-semibold text-amber-800">Backend no disponible</p>
-          <p class="text-xs text-amber-700 mt-0.5">
-            Inicia el servidor FastAPI en localhost:8000 para ver los datos reales.
-          </p>
-        </div>
-      </div>
-    }
-
     <!-- Skeletons -->
     @if (loading) {
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -48,11 +35,11 @@
         <app-stat-card [valor]="municipios.length" etiqueta="Municipios monitoreados"
                        [icono]="MapPin" color="#262626" />
         <app-stat-card [valor]="criticosCount" etiqueta="Estado crítico"
-                       [icono]="AlertCircle" color="#dc2626" />
+                       [icono]="CircleAlert" color="#dc2626" />
         <app-stat-card [valor]="altosCount" etiqueta="Riesgo alto"
-                       [icono]="AlertTriangle" color="#f59e0b" />
+                       [icono]="TriangleAlert" color="#f59e0b" />
         <app-stat-card [valor]="scorePromedio" etiqueta="Score promedio riesgo"
-                       [icono]="BarChart2" color="#84CC16" />
+                       [icono]="ChartBar" color="#84CC16" />
       </div>
 
       <!-- Mapa + Alertas -->
@@ -68,21 +55,60 @@
           <app-mapa-scz [municipios]="municipios" (municipioSeleccionado)="irAMunicipio($event)" />
         </div>
 
+        <!-- Panel de municipios ordenados por nivel de riesgo -->
         <div>
           <div class="flex items-center justify-between mb-3">
-            <h2 class="font-semibold text-sm text-jichi-dark">Alertas activas</h2>
-            @if (alertasCriticasCount > 0) {
-              <span class="badge-critico">{{ alertasCriticasCount }} críticas</span>
-            }
+            <h2 class="font-semibold text-sm text-jichi-dark">Estado de municipios</h2>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-jichi-muted">
+              {{ municipios.length }} total
+            </span>
           </div>
-          @if (alertas.length === 0 && !errorConexion) {
-            <div class="bg-white border border-jichi-gray/40 rounded-xl p-6 text-center">
-              <p class="text-xs text-jichi-muted">Sin alertas activas</p>
-            </div>
-          }
-          <div class="flex flex-col gap-3 overflow-y-auto" style="max-height: 500px">
-            @for (alerta of alertas; track alerta.id) {
-              <app-alerta-card [alerta]="alerta" />
+
+          <div class="flex flex-col gap-2 overflow-y-auto" style="max-height: 500px">
+            @for (m of municipiosPorRiesgo; track m.id) {
+              <button
+                class="w-full text-left bg-white border rounded-xl px-4 py-3 hover:shadow-sm
+                       transition-all duration-150 cursor-pointer group"
+                [class.border-red-200]="m.nivel_riesgo === 'critico'"
+                [class.border-amber-200]="m.nivel_riesgo === 'alto'"
+                [class.border-jichi-gray/40]="m.nivel_riesgo === 'medio' || m.nivel_riesgo === 'bajo'"
+                (click)="irAMunicipio(m)">
+
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="w-2 h-2 rounded-full flex-shrink-0"
+                          [class.bg-red-500]="m.nivel_riesgo === 'critico'"
+                          [class.bg-amber-400]="m.nivel_riesgo === 'alto'"
+                          [class.bg-yellow-400]="m.nivel_riesgo === 'medio'"
+                          [class.bg-lime-500]="m.nivel_riesgo === 'bajo'"></span>
+                    <span class="text-sm font-semibold text-jichi-dark truncate">{{ m.nombre }}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                    @if (m.alerta) {
+                      <lucide-angular [img]="CircleAlert" size="13"
+                                      [class.text-red-500]="m.alerta.severidad === 'critical'"
+                                      [class.text-amber-400]="m.alerta.severidad === 'warning'">
+                      </lucide-angular>
+                    }
+                    <lucide-angular [img]="ArrowRight" size="13"
+                                    class="text-jichi-gray group-hover:text-jichi-accent transition-colors duration-150">
+                    </lucide-angular>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <span [class]="'badge-' + m.nivel_riesgo">{{ m.nivel_riesgo }}</span>
+                  <span class="text-[11px] font-bold tabular-nums text-jichi-muted">
+                    {{ (m.score_riesgo * 100).toFixed(0) }}/100
+                  </span>
+                </div>
+
+                @if (m.alerta) {
+                  <p class="text-[11px] text-jichi-muted mt-2 leading-snug line-clamp-2">
+                    {{ m.alerta.descripcion }}
+                  </p>
+                }
+              </button>
             }
           </div>
         </div>
