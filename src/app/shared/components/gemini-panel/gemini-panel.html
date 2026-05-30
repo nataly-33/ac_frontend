@@ -1,1 +1,39 @@
-<p>gemini-panel works!</p>
+<div class="glass-card p-5 h-full flex flex-col">
+  <div class="flex items-center gap-3 mb-4">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+         style="background: linear-gradient(135deg, #4285f4, #34a853)">G</div>
+    <div>
+      <h3 class="font-display font-semibold">Análisis Gemini AI</h3>
+      <p class="text-xs" style="color: var(--color-text-muted)">{{ municipioNombre }}</p>
+    </div>
+  </div>
+
+  @if (!resumen && !loading) {
+    <div class="flex-1 flex flex-col items-center justify-center gap-4">
+      <p class="text-sm text-center" style="color: var(--color-text-muted)">
+        Genera un análisis ejecutivo con inteligencia artificial para este municipio.
+      </p>
+      <button (click)="generarResumen()"
+              class="px-6 py-3 rounded-lg font-display font-semibold text-sm transition-all hover:scale-105"
+              style="background: linear-gradient(135deg, #4285f4, #0284c7); color: white">
+        🤖 Generar análisis con Gemini
+      </button>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="flex-1 flex flex-col items-center justify-center gap-3">
+      <div class="w-8 h-8 rounded-full border-2 animate-spin"
+           style="border-color: var(--color-border); border-top-color: var(--color-accent)"></div>
+      <p class="text-xs font-mono" style="color: var(--color-text-muted)">Consultando Gemini...</p>
+    </div>
+  }
+
+  @if (resumen) {
+    <div class="flex-1 overflow-y-auto">
+      <p class="text-sm leading-relaxed" style="color: var(--color-text-muted); white-space: pre-line">{{ resumen }}</p>
+      <button (click)="generarResumen()" class="mt-4 text-xs font-mono hover:opacity-80 transition"
+              style="color: var(--color-accent)">↺ Regenerar análisis</button>
+    </div>
+  }
+</div>

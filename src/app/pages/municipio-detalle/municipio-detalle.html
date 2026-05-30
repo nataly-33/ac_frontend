@@ -1,1 +1,101 @@
-<p>municipio-detalle works!</p>
+<div class="min-h-screen p-6" style="background: var(--color-bg)">
+  <a routerLink="/dashboard" class="inline-flex items-center gap-2 text-sm mb-6 hover:opacity-80 transition"
+     style="color: var(--color-accent)">← Volver al mapa</a>
+
+  @if (loading) {
+    <div class="text-center py-20">
+      <div class="w-10 h-10 rounded-full border-2 animate-spin mx-auto mb-4"
+           style="border-color: var(--color-border); border-top-color: var(--color-accent)"></div>
+      <div class="font-mono text-sm" style="color: var(--color-text-muted)">Cargando análisis...</div>
+    </div>
+  }
+
+  @if (notFound) {
+    <div class="text-center py-20">
+      <div class="text-4xl mb-4">🔍</div>
+      <h2 class="font-display font-bold text-xl mb-2" style="color: var(--color-text)">Municipio no encontrado</h2>
+      <p class="text-sm mb-6" style="color: var(--color-text-muted)">El municipio solicitado no existe en la base de datos.</p>
+      <a routerLink="/dashboard" class="px-5 py-2 rounded-lg font-display font-semibold text-sm transition-all hover:scale-105 inline-block"
+         style="background: linear-gradient(135deg, #38bdf8, #0284c7); color: #050f1a">Volver al dashboard</a>
+    </div>
+  }
+
+  @if (!loading && !notFound && municipio && prediccion) {
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="glass-card p-6 mb-6">
+        <div class="flex justify-between items-start flex-wrap gap-4">
+          <div>
+            <h1 class="font-display font-bold text-3xl mb-1">{{ municipio.nombre }}</h1>
+            <p style="color: var(--color-text-muted)">
+              {{ municipio.region.replace('_', ' ') | titlecase }} · {{ municipio.poblacion | number }} habitantes
+            </p>
+          </div>
+          <div>
+            <span class="px-4 py-2 rounded-full text-sm font-display font-semibold uppercase"
+                  [class]="getRiesgoClass(municipio.nivel_riesgo)">
+              ⬤ {{ municipio.nivel_riesgo }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Score bar -->
+        <div class="mt-6">
+          <div class="flex justify-between text-xs mb-2" style="color: var(--color-text-muted)">
+            <span>Score de riesgo hídrico</span>
+            <span class="font-mono font-semibold" style="color: var(--color-text)">
+              {{ (municipio.score_riesgo * 100).toFixed(0) }}/100
+            </span>
+          </div>
+          <div class="h-2 rounded-full" style="background: var(--color-surface-2)">
+            <div class="h-2 rounded-full transition-all duration-1000"
+                 [style.width.%]="municipio.score_riesgo * 100"
+                 [style.background]="getRiesgoColor(municipio.nivel_riesgo)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indicadores clave -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="glass-card p-4 text-center">
+          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
+            {{ prediccion.meses_criticos }}
+          </div>
+          <div class="text-xs" style="color: var(--color-text-muted)">Meses hasta<br>situación crítica</div>
+        </div>
+        <div class="glass-card p-4 text-center">
+          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
+            {{ prediccion.proyeccion[0] }}%
+          </div>
+          <div class="text-xs" style="color: var(--color-text-muted)">Nivel freático<br>actual (relativo)</div>
+        </div>
+        <div class="glass-card p-4 text-center">
+          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
+            {{ prediccion.precipitacion_historica[5] }}mm
+          </div>
+          <div class="text-xs" style="color: var(--color-text-muted)">Precipitación<br>último mes</div>
+        </div>
+        <div class="glass-card p-4 text-center">
+          <div class="font-mono text-2xl font-semibold mb-1" style="color: var(--color-accent)">
+            {{ prediccion.tendencia }}
+          </div>
+          <div class="text-xs" style="color: var(--color-text-muted)">Tendencia<br>actual</div>
+        </div>
+      </div>
+
+      <!-- Gráfico + Panel Gemini -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass-card p-5">
+          <h3 class="font-display font-semibold mb-4">Proyección nivel freático — 6 meses</h3>
+          <app-grafico-tendencia
+            [proyeccion]="prediccion.proyeccion"
+            [precipitacion]="prediccion.precipitacion_historica" />
+        </div>
+        <app-gemini-panel
+          [municipioId]="municipio.id"
+          [municipioNombre]="municipio.nombre" />
+      </div>
+    </div>
+  }
+</div>

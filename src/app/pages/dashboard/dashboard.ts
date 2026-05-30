@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { Api } from '../../core/services/api';
+import { DatosLocalesService } from '../../core/services/datos-locales.service';
 import { Municipio, Alerta } from '../../core/models/municipio.model';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { AlertaCard } from '../../shared/components/alerta-card/alerta-card';
@@ -21,16 +21,14 @@ export class Dashboard implements OnInit {
   loading = true;
   errorConexion = false;
 
-  constructor(private api: Api, private router: Router) {}
+  constructor(private datos: DatosLocalesService, private router: Router) {}
 
   ngOnInit(): void {
-    this.api.getMunicipios().subscribe({
+    this.datos.getMunicipios().subscribe({
       next: (data) => { this.municipios = data; this.loading = false; },
-      error: () => { this.loading = false; this.errorConexion = true; }
     });
-    this.api.getAlertas().subscribe({
+    this.datos.getAlertas().subscribe({
       next: (data) => { this.alertas = data; },
-      error: () => {}
     });
   }
 
