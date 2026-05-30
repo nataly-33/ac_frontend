@@ -1,1 +1,56 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --color-bg: #050f1a;
+  --color-surface: #0a1e2e;
+  --color-surface-2: #0f2a3f;
+  --color-border: rgba(56, 189, 248, 0.15);
+  --color-accent: #38bdf8;
+  --color-accent-2: #06b6d4;
+  --color-text: #e2f0fb;
+  --color-text-muted: #7fa8c4;
+  --color-critico: #ef4444;
+  --color-alto: #f97316;
+  --color-medio: #f59e0b;
+  --color-bajo: #22c55e;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'DM Sans', sans-serif;
+  margin: 0;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Exo 2', sans-serif;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-accent); border-radius: 3px; }
+
+/* Clases utilitarias custom */
+.glass-card {
+  background: rgba(10, 30, 46, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.glow-text {
+  text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+}
+
+.badge-critico { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.badge-alto    { background: rgba(249,115,22,0.15); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+.badge-medio   { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.badge-bajo    { background: rgba(34,197,94,0.15);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+
+.pulse-critico { animation: pulse-red 2s infinite; }
+@keyframes pulse-red {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+}
