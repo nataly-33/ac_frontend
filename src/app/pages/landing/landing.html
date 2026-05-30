@@ -1,0 +1,72 @@
+<div class="min-h-screen flex flex-col" style="background: var(--color-bg)">
+  <!-- Fondo animado -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-20 left-10 w-96 h-96 rounded-full opacity-10"
+         style="background: radial-gradient(circle, #38bdf8, transparent); filter: blur(60px)"></div>
+    <div class="absolute bottom-20 right-10 w-80 h-80 rounded-full opacity-8"
+         style="background: radial-gradient(circle, #06b6d4, transparent); filter: blur(80px)"></div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="relative z-10 flex justify-between items-center px-8 py-5 border-b"
+       style="border-color: var(--color-border)">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center text-lg"
+           style="background: linear-gradient(135deg, #38bdf8, #0284c7)">💧</div>
+      <span class="font-display font-bold text-lg" style="color: var(--color-accent)">Acuífero-Data SCZ</span>
+    </div>
+    <button routerLink="/dashboard"
+            class="px-5 py-2 rounded-lg font-display font-semibold text-sm transition-all hover:scale-105"
+            style="background: linear-gradient(135deg, #38bdf8, #0284c7); color: #050f1a">
+      Acceder al Dashboard →
+    </button>
+  </nav>
+
+  <!-- Hero -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 py-20">
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono mb-8"
+         style="background: rgba(56,189,248,0.1); border: 1px solid var(--color-border); color: var(--color-accent)">
+      🔴 LIVE — 3 municipios en estado CRÍTICO
+    </div>
+
+    <h1 class="font-display font-extrabold mb-6 leading-tight glow-text"
+        style="font-size: clamp(2.5rem, 6vw, 4.5rem); color: var(--color-text)">
+      Inteligencia hídrica<br>
+      <span style="color: var(--color-accent)">para Santa Cruz</span>
+    </h1>
+
+    <p class="max-w-2xl text-lg mb-12" style="color: var(--color-text-muted); line-height: 1.8">
+      Plataforma de predicción y monitoreo de acuíferos subterráneos.
+      Detectamos sequías antes de que ocurran, protegiendo comunidades rurales
+      y productores agrícolas del departamento.
+    </p>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-6 max-w-2xl w-full mb-12">
+      <div class="glass-card p-5 text-center">
+        <div class="font-display font-bold text-3xl mb-1" style="color: var(--color-critico)">3</div>
+        <div class="text-xs" style="color: var(--color-text-muted)">Municipios<br>en emergencia</div>
+      </div>
+      <div class="glass-card p-5 text-center">
+        <div class="font-display font-bold text-3xl mb-1" style="color: var(--color-accent)">15</div>
+        <div class="text-xs" style="color: var(--color-text-muted)">Municipios<br>monitoreados</div>
+      </div>
+      <div class="glass-card p-5 text-center">
+        <div class="font-display font-bold text-3xl mb-1" style="color: var(--color-bajo)">6mo</div>
+        <div class="text-xs" style="color: var(--color-text-muted)">Predicción<br>anticipada</div>
+      </div>
+    </div>
+
+    <button routerLink="/dashboard"
+            class="px-10 py-4 rounded-xl font-display font-bold text-lg transition-all hover:scale-105"
+            style="background: linear-gradient(135deg, #38bdf8, #0284c7); color: #050f1a; box-shadow: 0 0 30px rgba(56,189,248,0.3)">
+      Ver mapa de riesgos →
+    </button>
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative z-10 text-center py-4 text-xs"
+          style="color: var(--color-text-muted); border-top: 1px solid var(--color-border)">
+    Build With AI 2026 · Google Developer Groups Santa Cruz · UCB Santa Cruz
+  </footer>
+</div>
