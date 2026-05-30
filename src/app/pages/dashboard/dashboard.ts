@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+<<<<<<< Updated upstream
 import { DatosLocalesService } from '../../core/services/datos-locales.service';
+=======
+import {
+  LucideAngularModule,
+  MapPin, AlertCircle, AlertTriangle, BarChart2, ArrowRight
+} from 'lucide-angular';
+import { Api } from '../../core/services/api';
+>>>>>>> Stashed changes
 import { Municipio, Alerta } from '../../core/models/municipio.model';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { AlertaCard } from '../../shared/components/alerta-card/alerta-card';
@@ -11,11 +19,17 @@ import { Navbar } from '../../shared/components/navbar/navbar';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, StatCard, AlertaCard, MapaScz, Navbar],
+  imports: [CommonModule, RouterModule, LucideAngularModule, StatCard, AlertaCard, MapaScz, Navbar],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
+  readonly MapPin = MapPin;
+  readonly AlertCircle = AlertCircle;
+  readonly AlertTriangle = AlertTriangle;
+  readonly BarChart2 = BarChart2;
+  readonly ArrowRight = ArrowRight;
+
   municipios: Municipio[] = [];
   alertas: Alerta[] = [];
   loading = true;
