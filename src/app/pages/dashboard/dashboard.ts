@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-<<<<<<< Updated upstream
-import { DatosLocalesService } from '../../core/services/datos-locales.service';
-=======
 import {
   LucideAngularModule,
-  MapPin, AlertCircle, AlertTriangle, BarChart2, ArrowRight
+  MapPin, CircleAlert, TriangleAlert, ChartBar, ArrowRight
 } from 'lucide-angular';
-import { Api } from '../../core/services/api';
->>>>>>> Stashed changes
+import { DatosLocalesService } from '../../core/services/datos-locales.service';
 import { Municipio, Alerta } from '../../core/models/municipio.model';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { AlertaCard } from '../../shared/components/alerta-card/alerta-card';
@@ -25,15 +21,14 @@ import { Navbar } from '../../shared/components/navbar/navbar';
 })
 export class Dashboard implements OnInit {
   readonly MapPin = MapPin;
-  readonly AlertCircle = AlertCircle;
-  readonly AlertTriangle = AlertTriangle;
-  readonly BarChart2 = BarChart2;
+  readonly CircleAlert = CircleAlert;
+  readonly TriangleAlert = TriangleAlert;
+  readonly ChartBar = ChartBar;
   readonly ArrowRight = ArrowRight;
 
   municipios: Municipio[] = [];
   alertas: Alerta[] = [];
   loading = true;
-  errorConexion = false;
 
   constructor(private datos: DatosLocalesService, private router: Router) {}
 
@@ -62,6 +57,13 @@ export class Dashboard implements OnInit {
     if (!this.municipios.length) return '—';
     const avg = this.municipios.reduce((sum, m) => sum + m.score_riesgo, 0) / this.municipios.length;
     return (avg * 100).toFixed(0) + '/100';
+  }
+
+  get municipiosPorRiesgo(): Array<Municipio & { alerta?: Alerta }> {
+    const orden: Record<string, number> = { critico: 0, alto: 1, medio: 2, bajo: 3 };
+    return [...this.municipios]
+      .sort((a, b) => (orden[a.nivel_riesgo] ?? 4) - (orden[b.nivel_riesgo] ?? 4) || b.score_riesgo - a.score_riesgo)
+      .map(m => ({ ...m, alerta: this.alertas.find(a => a.municipio_id === m.id) }));
   }
 
   irAMunicipio(municipio: Municipio): void {
